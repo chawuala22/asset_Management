@@ -149,19 +149,7 @@ ng serve --port 4300
 - ✅ API simulada con observables
 - ✅ Componentes reutilizables
 
-## 🚀 Mejoras Opcionales (No implementadas)
-
-- Unit tests con Angular Testing Library
-- Router para navegación entre páginas
-- Persistencia local (localStorage)
-- Gráficos de inversión
-- Exportación de historial
-- Tema oscuro/claro
 
 ## 📄 Licencia
 
-Proyecto desarrollado como prueba técnica para BTG Pactual.
-
----
-
-**Nota**: Esta es una aplicación demo sin backend real. Todos los datos son simulados y se pierden al recargar la página.
+Proyecto desarrollado como prueba técnica para Ceiba Software House S.A.S.
