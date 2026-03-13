@@ -17,6 +17,7 @@ export class FundListComponent implements OnInit {
   error = signal<string | null>(null);
   
   fundSelected = output<Fund>();
+  subscriptionCancelled = output<Fund>();
 
   constructor(private fundService: FundService) {}
 
@@ -43,6 +44,26 @@ export class FundListComponent implements OnInit {
 
   subscribeToFund(fund: Fund) {
     this.fundSelected.emit(fund);
+  }
+
+  cancelSubscription(fund: Fund) {
+    this.fundService.cancelSubscription(fund.id).subscribe({
+      next: (transaction) => {
+        this.subscriptionCancelled.emit(fund);
+      },
+      error: (err) => {
+        this.error.set('Error al cancelar la suscripción');
+        console.error('Error cancelling subscription:', err);
+      }
+    });
+  }
+
+  hasActiveSubscription(fundId: number): boolean {
+    return this.fundService.hasActiveSubscription(fundId);
+  }
+
+  getInvestedAmount(fundId: number): number {
+    return this.fundService.getInvestedAmount(fundId);
   }
 
   formatCurrency(amount: number): string {

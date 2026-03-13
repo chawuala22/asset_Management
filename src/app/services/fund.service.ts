@@ -123,36 +123,50 @@ export class FundService {
     return of(transaction).pipe(delay(800));
   }
 
-  cancelSubscription(fundId: number, notificationMethod: 'email' | 'sms'): Observable<Transaction> {
-    const subscription = this.transactions().find(
-      t => t.fundId === fundId && t.type === 'subscription'
-    );
-
-    if (!subscription) {
-      return throwError(() => new Error('No se encontró una suscripción para este fondo'));
+  cancelSubscription(fundId: number): Observable<Transaction> {
+    // Find transaction for this fund
+    const fundTransactions = this.transactions().filter(t => t.fundId === fundId);
+    
+    if (fundTransactions.length === 0) {
+      return throwError(() => new Error('No se encontró suscripción para este fondo'));
     }
 
-    const transaction: Transaction = {
+    const lastTransaction = fundTransactions[fundTransactions.length - 1];
+    
+    // Create cancellation transaction (negative amount to return money)
+    const cancellationTransaction: Transaction = {
       id: this.generateTransactionId(),
       fundId: fundId,
-      fundName: subscription.fundName,
+      fundName: lastTransaction.fundName,
       type: 'cancellation',
-      amount: subscription.amount,
+      amount: -lastTransaction.amount, // Negative to return money
       date: new Date(),
-      notificationMethod: notificationMethod
+      notificationMethod: lastTransaction.notificationMethod
     };
 
-    this.transactions.update(transactions => [...transactions, transaction]);
+    this.transactions.update(transactions => [...transactions, cancellationTransaction]);
     this.balance.update(balance => ({
       ...balance,
-      current: balance.current + subscription.amount
+      current: balance.current + lastTransaction.amount // Return the invested amount
     }));
 
     // Save to localStorage
     this.storageService.saveTransactions(this.transactions());
     this.storageService.saveBalance(this.balance());
 
-    return of(transaction).pipe(delay(800));
+    return of(cancellationTransaction).pipe(delay(800));
+  }
+
+  hasActiveSubscription(fundId: number): boolean {
+    const fundTransactions = this.transactions().filter(t => t.fundId === fundId);
+    // Check if there's a positive transaction (subscription) without a corresponding negative one
+    const totalInvested = fundTransactions.reduce((sum, t) => sum + t.amount, 0);
+    return totalInvested > 0;
+  }
+
+  getInvestedAmount(fundId: number): number {
+    const fundTransactions = this.transactions().filter(t => t.fundId === fundId);
+    return fundTransactions.reduce((sum, t) => Math.max(0, sum + t.amount), 0);
   }
 
   private generateTransactionId(): string {

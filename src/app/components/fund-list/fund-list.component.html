@@ -32,10 +32,20 @@
               <span class="label">Monto mínimo:</span>
               <span class="amount">{{ formatCurrency(fund.minimumAmount) }}</span>
             </div>
+            @if (hasActiveSubscription(fund.id)) {
+              <div class="fund-invested">
+                <span class="label">Invertido:</span>
+                <span class="amount">{{ formatCurrency(getInvestedAmount(fund.id)) }}</span>
+              </div>
+            }
           </div>
 
           <div class="fund-actions">
-            <button class="subscribe-btn" (click)="subscribeToFund(fund)">Suscribirse</button>
+            @if (hasActiveSubscription(fund.id)) {
+              <button class="cancel-btn" (click)="cancelSubscription(fund)">Cancelar</button>
+            } @else {
+              <button class="subscribe-btn" (click)="subscribeToFund(fund)">Suscribirse</button>
+            }
           </div>
         </div>
       }

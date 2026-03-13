@@ -94,10 +94,11 @@
       .fund-details {
         margin-bottom: 24px;
 
-        .fund-amount {
+        .fund-amount, .fund-invested {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          margin-bottom: 8px;
 
           .label {
             color: #666;
@@ -109,6 +110,10 @@
             font-weight: 600;
             font-size: 1.1rem;
           }
+        }
+
+        .fund-invested .amount {
+          color: var(--primary-color);
         }
       }
 
@@ -127,6 +132,27 @@
 
           &:hover {
             background-color: #219a52;
+          }
+
+          &:active {
+            transform: scale(0.98);
+          }
+        }
+
+        .cancel-btn {
+          width: 100%;
+          background-color: var(--danger-color);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #c0392b;
           }
 
           &:active {

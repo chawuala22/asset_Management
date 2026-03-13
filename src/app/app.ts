@@ -46,4 +46,10 @@ export class App implements OnInit {
       // No need to manually load - computed signal updates automatically
     }
   }
+
+  onSubscriptionCancelled(fund: Fund) {
+    // The balance and transactions are automatically updated via computed signals
+    // No additional action needed, but we could show a confirmation message
+    console.log('Suscripción cancelada para:', fund.name);
+  }
 }
