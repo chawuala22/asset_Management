@@ -35,8 +35,6 @@
           </div>
           <div class="error-message" *ngIf="subscriptionForm.get('amount')?.invalid && subscriptionForm.get('amount')?.touched">
             <div class="alert alert-error" *ngIf="hasInsufficientBalance() || hasInsufficientAmount()">
-              <span *ngIf="hasInsufficientBalance()">❌</span>
-              <span *ngIf="hasInsufficientAmount()">💰</span>
               <strong>{{ getAmountError() }}</strong>
             </div>
             <div *ngIf="!hasInsufficientBalance() && !hasInsufficientAmount()">

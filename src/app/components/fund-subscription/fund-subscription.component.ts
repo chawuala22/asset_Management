@@ -113,11 +113,11 @@ export class FundSubscriptionComponent {
     const amount = this.subscriptionForm.get('amount')?.value;
     
     if (amount < this.getMinimumAmount()) {
-      return `💰 Monto mínimo requerido es ${this.formatCurrency(this.getMinimumAmount())}. Te faltan ${this.formatCurrency(this.getMinimumAmount() - amount)}.`;
+      return `Monto mínimo requerido es ${this.formatCurrency(this.getMinimumAmount())}. Te faltan ${this.formatCurrency(this.getMinimumAmount() - amount)}.`;
     }
     
     if (amount > this.getMaxAmount()) {
-      return `❌ Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())} y necesitas ${this.formatCurrency(amount - this.getMaxAmount())} más.`;
+      return `Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())} y necesitas ${this.formatCurrency(amount - this.getMaxAmount())} más.`;
     }
     
     return '';
