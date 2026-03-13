@@ -1,0 +1,40 @@
+<div class="fund-list-container">
+  <h2>Fondos Disponibles</h2>
+  
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando fondos...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error()" class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadFunds()" class="retry-btn">Reintentar</button>
+  </div>
+
+  <!-- Fund List -->
+  <div *ngIf="!loading() && !error()" class="fund-grid">
+    <div *ngFor="let fund of funds()" class="fund-card">
+      <div class="fund-header">
+        <span class="fund-category" [style.background-color]="getCategoryColor(fund.category)">
+          {{ fund.category }}
+        </span>
+        <h3>{{ fund.name }}</h3>
+      </div>
+      
+      <div class="fund-details">
+        <div class="fund-amount">
+          <span class="label">Monto mínimo:</span>
+          <span class="amount">{{ formatCurrency(fund.minimumAmount) }}</span>
+        </div>
+      </div>
+      
+      <div class="fund-actions">
+        <button class="subscribe-btn" (click)="subscribeToFund(fund)">
+          Suscribirse
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

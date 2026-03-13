@@ -1,0 +1,216 @@
+.subscription-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+
+  .subscription-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 24px 0;
+      margin-bottom: 20px;
+
+      h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #666;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      }
+    }
+
+    .modal-body {
+      padding: 0 24px 24px;
+
+      .fund-info {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+
+        h4 {
+          margin: 0 0 12px 0;
+          color: #333;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+
+        .fund-details {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          flex-wrap: wrap;
+
+          .category {
+            display: inline-block;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+
+          .minimum {
+            color: #666;
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      form {
+        .form-group {
+          margin-bottom: 20px;
+
+          label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95rem;
+          }
+
+          .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+
+            &:focus {
+              outline: none;
+              border-color: #3498db;
+            }
+
+            &.ng-invalid.ng-touched {
+              border-color: #e74c3c;
+            }
+          }
+
+          .form-help {
+            margin-top: 6px;
+            color: #666;
+            font-size: 0.85rem;
+          }
+
+          .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 6px;
+          }
+        }
+
+        .form-actions {
+          display: flex;
+          gap: 12px;
+          margin-top: 32px;
+
+          button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            &.btn-secondary {
+              background-color: #6c757d;
+              color: white;
+
+              &:hover:not(:disabled) {
+                background-color: #5a6268;
+              }
+            }
+
+            &.btn-primary {
+              background-color: #27ae60;
+              color: white;
+
+              &:hover:not(:disabled) {
+                background-color: #219a52;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .subscription-modal-overlay {
+    padding: 10px;
+
+    .subscription-modal {
+      .modal-header {
+        padding: 20px 20px 0;
+
+        h3 {
+          font-size: 1.3rem;
+        }
+      }
+
+      .modal-body {
+        padding: 0 20px 20px;
+
+        .fund-info {
+          padding: 16px;
+        }
+
+        form {
+          .form-actions {
+            flex-direction: column;
+
+            button {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,104 @@
+<div class="subscription-modal-overlay" *ngIf="fund()">
+  <div class="subscription-modal">
+    <div class="modal-header">
+      <h3>Suscripción a Fondo</h3>
+      <button class="close-btn" (click)="onClose()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="fund-info">
+        <h4>{{ fund()?.name }}</h4>
+        <div class="fund-details">
+          <span class="category" [style.background-color]="fund()?.category === 'FPV' ? '#4CAF50' : '#2196F3'">
+            {{ fund()?.category }}
+          </span>
+          <span class="minimum">Monto mínimo: {{ formatCurrency(fund()?.minimumAmount || 0) }}</span>
+        </div>
+      </div>
+
+      <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()">
+        <!-- Amount Field -->
+        <div class="form-group">
+          <label for="amount">Monto a invertir</label>
+          <input 
+            type="number" 
+            id="amount" 
+            formControlName="amount"
+            class="form-control"
+            [min]="getMinimumAmount()"
+            [max]="getMaxAmount()"
+            step="1000"
+          >
+          <div class="form-help">
+            Saldo disponible: {{ formatCurrency(getMaxAmount()) }}
+          </div>
+          <div class="error-message" *ngIf="subscriptionForm.get('amount')?.invalid && subscriptionForm.get('amount')?.touched">
+            {{ getAmountError() }}
+          </div>
+        </div>
+
+        <!-- Notification Method -->
+        <div class="form-group">
+          <label for="notificationMethod">Método de notificación</label>
+          <select 
+            id="notificationMethod" 
+            formControlName="notificationMethod"
+            class="form-control"
+            (change)="onNotificationMethodChange()"
+          >
+            <option value="email">Correo electrónico</option>
+            <option value="sms">Mensaje de texto (SMS)</option>
+          </select>
+        </div>
+
+        <!-- Notification Value -->
+        <div class="form-group">
+          <label for="notificationValue">{{ getNotificationMethodLabel() }}</label>
+          <input 
+            type="text" 
+            id="notificationValue" 
+            formControlName="notificationValue"
+            class="form-control"
+            [placeholder]="getNotificationMethodPlaceholder()"
+          >
+          <div class="error-message" *ngIf="subscriptionForm.get('notificationValue')?.invalid && subscriptionForm.get('notificationValue')?.touched">
+            <span *ngIf="subscriptionForm.get('notificationValue')?.errors?.['required']">
+              Este campo es requerido
+            </span>
+            <span *ngIf="subscriptionForm.get('notificationValue')?.errors?.['email']">
+              Ingresa un correo válido
+            </span>
+            <span *ngIf="subscriptionForm.get('notificationValue')?.errors?.['pattern']">
+              Ingresa un número de 10 dígitos
+            </span>
+          </div>
+        </div>
+
+        <!-- Form Error -->
+        <div class="error-message" *ngIf="error()">
+          {{ error() }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-secondary" 
+            (click)="onClose()"
+            [disabled]="loading()"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn-primary"
+            [disabled]="subscriptionForm.invalid || loading() || !isAmountValid()"
+          >
+            <span *ngIf="!loading()">Confirmar Suscripción</span>
+            <span *ngIf="loading()">Procesando...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

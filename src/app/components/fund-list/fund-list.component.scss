@@ -1,0 +1,155 @@
+.fund-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h2 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 40px;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+  }
+
+  .error-state {
+    text-align: center;
+    padding: 40px;
+    color: #e74c3c;
+
+    .retry-btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-size: 1rem;
+
+      &:hover {
+        background-color: #2980b9;
+      }
+    }
+  }
+
+  .fund-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+
+    .fund-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .fund-header {
+        margin-bottom: 20px;
+
+        .fund-category {
+          display: inline-block;
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          margin-bottom: 12px;
+        }
+
+        h3 {
+          margin: 0;
+          color: #333;
+          font-size: 1.2rem;
+          font-weight: 600;
+          line-height: 1.4;
+        }
+      }
+
+      .fund-details {
+        margin-bottom: 24px;
+
+        .fund-amount {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .label {
+            color: #666;
+            font-size: 0.9rem;
+          }
+
+          .amount {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .fund-actions {
+        .subscribe-btn {
+          width: 100%;
+          background-color: #27ae60;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #219a52;
+          }
+
+          &:active {
+            transform: scale(0.98);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .fund-list-container {
+    padding: 15px;
+
+    .fund-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+}
