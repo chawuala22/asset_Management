@@ -25,15 +25,23 @@
             id="amount" 
             formControlName="amount"
             class="form-control"
+            [class.error-border]="hasInsufficientBalance() || hasInsufficientAmount()"
             [min]="getMinimumAmount()"
             [max]="getMaxAmount()"
             step="1000"
           >
           <div class="form-help">
-            Saldo disponible: {{ formatCurrency(getMaxAmount()) }}
+            Saldo disponible: {{ formatCurrency(getMaxAmount()) }} | Monto mínimo: {{ formatCurrency(getMinimumAmount()) }}
           </div>
           <div class="error-message" *ngIf="subscriptionForm.get('amount')?.invalid && subscriptionForm.get('amount')?.touched">
-            {{ getAmountError() }}
+            <div class="alert alert-error" *ngIf="hasInsufficientBalance() || hasInsufficientAmount()">
+              <span *ngIf="hasInsufficientBalance()">❌</span>
+              <span *ngIf="hasInsufficientAmount()">💰</span>
+              <strong>{{ getAmountError() }}</strong>
+            </div>
+            <div *ngIf="!hasInsufficientBalance() && !hasInsufficientAmount()">
+              {{ getAmountError() }}
+            </div>
           </div>
         </div>
 

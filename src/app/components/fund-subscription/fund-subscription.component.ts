@@ -1,4 +1,4 @@
-import { Component, signal, input, output } from '@angular/core';
+import { Component, signal, input, output, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Fund, SubscriptionRequest, NotificationMethod } from '../../models/fund.model';
@@ -31,25 +31,54 @@ export class FundSubscriptionComponent {
       notificationMethod: ['email', Validators.required],
       notificationValue: ['', [Validators.required, Validators.email]]
     });
+
+    // Reset form when fund changes
+    effect(() => {
+      const fund = this.fund();
+      if (fund) {
+        this.resetForm();
+        this.subscriptionForm.patchValue({
+          amount: fund.minimumAmount
+        });
+      }
+    });
   }
 
   ngOnInit() {
-    if (this.fund()) {
-      this.subscriptionForm.patchValue({
-        amount: this.fund()!.minimumAmount
-      });
-    }
+    // Form is already initialized in constructor effect
+  }
+
+  private resetForm() {
+    this.subscriptionForm.reset({
+      amount: '',
+      notificationMethod: 'email',
+      notificationValue: ''
+    });
+    
+    // Reset validators to email (default)
+    const notificationValueControl = this.subscriptionForm.get('notificationValue');
+    notificationValueControl?.setValidators([Validators.required, Validators.email]);
+    notificationValueControl?.updateValueAndValidity();
+    
+    this.error.set(null);
+    this.loading.set(false);
   }
 
   onNotificationMethodChange() {
     const method = this.subscriptionForm.get('notificationMethod')?.value;
     const notificationValueControl = this.subscriptionForm.get('notificationValue');
     
+    // Clear the current value when method changes
+    notificationValueControl?.setValue('');
+    
+    // Update validators based on new method
     if (method === 'email') {
       notificationValueControl?.setValidators([Validators.required, Validators.email]);
     } else {
       notificationValueControl?.setValidators([Validators.required, Validators.pattern('^[0-9]{10}$')]);
     }
+    
+    // Force validation update
     notificationValueControl?.updateValueAndValidity();
   }
 
@@ -84,14 +113,24 @@ export class FundSubscriptionComponent {
     const amount = this.subscriptionForm.get('amount')?.value;
     
     if (amount < this.getMinimumAmount()) {
-      return `El monto mínimo es ${this.formatCurrency(this.getMinimumAmount())}`;
+      return `💰 Monto mínimo requerido es ${this.formatCurrency(this.getMinimumAmount())}. Te faltan ${this.formatCurrency(this.getMinimumAmount() - amount)}.`;
     }
     
     if (amount > this.getMaxAmount()) {
-      return `Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())}`;
+      return `❌ Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())} y necesitas ${this.formatCurrency(amount - this.getMaxAmount())} más.`;
     }
     
     return '';
+  }
+
+  hasInsufficientBalance(): boolean {
+    const amount = this.subscriptionForm.get('amount')?.value;
+    return amount > this.getMaxAmount();
+  }
+
+  hasInsufficientAmount(): boolean {
+    const amount = this.subscriptionForm.get('amount')?.value;
+    return amount < this.getMinimumAmount();
   }
 
   onSubmit() {
@@ -124,6 +163,7 @@ export class FundSubscriptionComponent {
       next: (transaction) => {
         this.loading.set(false);
         this.subscriptionSuccess.emit(transaction);
+        this.resetForm(); // Reset form after successful subscription
         this.close.emit();
       },
       error: (err) => {
@@ -135,6 +175,7 @@ export class FundSubscriptionComponent {
   }
 
   onClose() {
+    this.resetForm(); // Reset form when closing modal
     this.close.emit();
   }
 }
