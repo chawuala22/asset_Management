@@ -3,25 +3,37 @@
   <div class="card">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-xl font-bold text-gray-700">Resumen de Saldo</h3>
-      <button class="btn btn-secondary btn-sm" (click)="refreshTransactions()" [disabled]="loading()">
+      <button
+        class="btn btn-secondary btn-sm"
+        (click)="refreshTransactions()"
+        [disabled]="loading()"
+      >
         🔄 Actualizar
       </button>
     </div>
-    
+
     <div class="space-y-4">
       <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
         <span class="font-medium text-gray-600">Saldo Actual</span>
-        <span class="text-lg font-bold text-primary">{{ formatCurrency(balance().current) }}</span>
+        <span class="text-lg font-bold text-primary">
+          {{ formatCurrency(balance().current) }}
+        </span>
       </div>
-      
+
       <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
         <span class="font-medium text-gray-600">Saldo Inicial</span>
-        <span class="text-lg font-semibold">{{ formatCurrency(balance().initial) }}</span>
+        <span class="text-lg font-semibold">
+          {{ formatCurrency(balance().initial) }}
+        </span>
       </div>
-      
-      <div class="flex justify-between items-center p-3 bg-primary bg-opacity-10 rounded-lg border border-primary border-opacity-20">
+
+      <div
+        class="flex justify-between items-center p-3 bg-primary bg-opacity-10 rounded-lg border border-primary border-opacity-20"
+      >
         <span class="font-medium text-primary">Total Invertido</span>
-        <span class="text-lg font-bold text-primary">{{ formatCurrency(getTotalInvested()) }}</span>
+        <span class="text-lg font-bold text-primary">
+          {{ formatCurrency(getTotalInvested()) }}
+        </span>
       </div>
     </div>
   </div>
@@ -29,56 +41,71 @@
   <!-- Transactions Section -->
   <div class="transactions-section">
     <h3>Historial de Transacciones</h3>
-    
-    <!-- Loading State -->
-    <div *ngIf="loading()" class="loading-state">
-      <div class="spinner"></div>
-      <p>Cargando transacciones...</p>
-    </div>
 
-    <!-- Error State -->
-    <div *ngIf="error()" class="error-state">
-      <p>{{ error() }}</p>
-      <button (click)="refreshTransactions()" class="retry-btn">Reintentar</button>
-    </div>
-
-    <!-- Empty State -->
-    <div *ngIf="!loading() && !error() && transactions().length === 0" class="empty-state">
-      <p>No hay transacciones registradas</p>
-    </div>
-
-    <!-- Transactions List -->
-    <div *ngIf="!loading() && !error() && transactions().length > 0" class="transactions-list">
-      <div *ngFor="let transaction of transactions()" class="transaction-item">
-        <div class="transaction-header">
-          <div class="transaction-info">
-            <span 
-              class="transaction-type" 
-              [style.color]="getTransactionTypeColor(transaction.type)"
-            >
-              {{ getTransactionTypeLabel(transaction.type) }}
-            </span>
-            <span class="transaction-fund">{{ transaction.fundName }}</span>
-          </div>
-          <div class="transaction-amount">
-            <span 
-              class="amount" 
-              [style.color]="getTransactionTypeColor(transaction.type)"
-            >
-              {{ transaction.type === 'subscription' ? '-' : '+' }}{{ formatCurrency(transaction.amount) }}
-            </span>
-          </div>
-        </div>
-        
-        <div class="transaction-details">
-          <div class="transaction-date">
-            {{ transaction.date | date:'dd/MM/yyyy HH:mm' }}
-          </div>
-          <div class="transaction-notification">
-            Notificación: {{ getNotificationMethodLabel(transaction.notificationMethod) }}
-          </div>
-        </div>
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando transacciones...</p>
       </div>
-    </div>
+    }
+
+    @if (error()) {
+      <div class="error-state">
+        <p>{{ error() }}</p>
+        <button (click)="refreshTransactions()" class="retry-btn">
+          Reintentar
+        </button>
+      </div>
+    }
+
+    @if (!loading() && !error() && transactions().length === 0) {
+      <div class="empty-state">
+        <p>No hay transacciones registradas</p>
+      </div>
+    }
+
+    @if (!loading() && !error() && transactions().length > 0) {
+      <div class="transactions-list">
+        @for (transaction of transactions(); track transaction) {
+          <div class="transaction-item">
+            <div class="transaction-header">
+              <div class="transaction-info">
+                <span
+                  class="transaction-type"
+                  [style.color]="getTransactionTypeColor(transaction.type)"
+                >
+                  {{ getTransactionTypeLabel(transaction.type) }}
+                </span>
+
+                <span class="transaction-fund">
+                  {{ transaction.fundName }}
+                </span>
+              </div>
+
+              <div class="transaction-amount">
+                <span
+                  class="amount"
+                  [style.color]="getTransactionTypeColor(transaction.type)"
+                >
+                  {{ transaction.type === 'subscription' ? '-' : '+' }}
+                  {{ formatCurrency(transaction.amount) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="transaction-details">
+              <div class="transaction-date">
+                {{ transaction.date | date: 'dd/MM/yyyy HH:mm' }}
+              </div>
+
+              <div class="transaction-notification">
+                Notificación:
+                {{ getNotificationMethodLabel(transaction.notificationMethod) }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </div>
 </div>

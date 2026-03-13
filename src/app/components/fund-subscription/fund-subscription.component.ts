@@ -10,7 +10,7 @@ import { formatCurrency } from '../../utils/currency.utils';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './fund-subscription.component.html',
-  styleUrls: ['./fund-subscription.component.scss']
+  styleUrls: ['./fund-subscription.component.scss'],
 })
 export class FundSubscriptionComponent {
   fund = input<Fund | null>(null);
@@ -24,12 +24,12 @@ export class FundSubscriptionComponent {
 
   constructor(
     private fb: FormBuilder,
-    private fundService: FundService
+    private fundService: FundService,
   ) {
     this.subscriptionForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(1)]],
       notificationMethod: ['email', Validators.required],
-      notificationValue: ['', [Validators.required, Validators.email]]
+      notificationValue: ['', [Validators.required, Validators.email]],
     });
 
     // Reset form when fund changes
@@ -38,7 +38,7 @@ export class FundSubscriptionComponent {
       if (fund) {
         this.resetForm();
         this.subscriptionForm.patchValue({
-          amount: fund.minimumAmount
+          amount: fund.minimumAmount,
         });
       }
     });
@@ -52,14 +52,14 @@ export class FundSubscriptionComponent {
     this.subscriptionForm.reset({
       amount: '',
       notificationMethod: 'email',
-      notificationValue: ''
+      notificationValue: '',
     });
-    
+
     // Reset validators to email (default)
     const notificationValueControl = this.subscriptionForm.get('notificationValue');
     notificationValueControl?.setValidators([Validators.required, Validators.email]);
     notificationValueControl?.updateValueAndValidity();
-    
+
     this.error.set(null);
     this.loading.set(false);
   }
@@ -67,17 +67,20 @@ export class FundSubscriptionComponent {
   onNotificationMethodChange() {
     const method = this.subscriptionForm.get('notificationMethod')?.value;
     const notificationValueControl = this.subscriptionForm.get('notificationValue');
-    
+
     // Clear the current value when method changes
     notificationValueControl?.setValue('');
-    
+
     // Update validators based on new method
     if (method === 'email') {
       notificationValueControl?.setValidators([Validators.required, Validators.email]);
     } else {
-      notificationValueControl?.setValidators([Validators.required, Validators.pattern('^[0-9]{10}$')]);
+      notificationValueControl?.setValidators([
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$'),
+      ]);
     }
-    
+
     // Force validation update
     notificationValueControl?.updateValueAndValidity();
   }
@@ -111,15 +114,15 @@ export class FundSubscriptionComponent {
 
   getAmountError(): string {
     const amount = this.subscriptionForm.get('amount')?.value;
-    
+
     if (amount < this.getMinimumAmount()) {
-      return `Monto mínimo requerido es ${this.formatCurrency(this.getMinimumAmount())}. Te faltan ${this.formatCurrency(this.getMinimumAmount() - amount)}.`;
+      return `El monto mínimo es ${this.formatCurrency(this.getMinimumAmount())}`;
     }
-    
+
     if (amount > this.getMaxAmount()) {
-      return `Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())} y necesitas ${this.formatCurrency(amount - this.getMaxAmount())} más.`;
+      return ` Saldo insuficiente. Tu saldo actual es ${this.formatCurrency(this.getMaxAmount())} y necesitas ${this.formatCurrency(amount - this.getMaxAmount())} más.`;
     }
-    
+
     return '';
   }
 
@@ -128,18 +131,13 @@ export class FundSubscriptionComponent {
     return amount > this.getMaxAmount();
   }
 
-  hasInsufficientAmount(): boolean {
-    const amount = this.subscriptionForm.get('amount')?.value;
-    return amount < this.getMinimumAmount();
-  }
-
   onSubmit() {
     if (this.subscriptionForm.invalid || !this.fund()) {
       return;
     }
 
     const amount = this.subscriptionForm.get('amount')?.value;
-    
+
     if (!this.isAmountValid()) {
       this.error.set(this.getAmountError());
       return;
@@ -150,13 +148,13 @@ export class FundSubscriptionComponent {
 
     const notificationMethod: NotificationMethod = {
       type: this.subscriptionForm.get('notificationMethod')?.value,
-      value: this.subscriptionForm.get('notificationValue')?.value
+      value: this.subscriptionForm.get('notificationValue')?.value,
     };
 
     const subscriptionRequest: SubscriptionRequest = {
       fundId: this.fund()!.id,
       amount: amount,
-      notificationMethod: notificationMethod
+      notificationMethod: notificationMethod,
     };
 
     this.fundService.subscribeToFund(subscriptionRequest).subscribe({
@@ -170,7 +168,7 @@ export class FundSubscriptionComponent {
         this.loading.set(false);
         this.error.set(err.message || 'Error al procesar la suscripción');
         console.error('Subscription error:', err);
-      }
+      },
     });
   }
 
